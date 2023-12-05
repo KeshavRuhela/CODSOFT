@@ -1,0 +1,132 @@
+<style>
+
+
+.design{
+    padding:10px;
+    border:0.1px solid gray;
+    margin-bottom:5px;
+}
+.design:hover{
+border-bottom:2px solid tomato;
+}
+
+/* Change color of dropdown links on hover */
+.dropdown-content a:hover {background-color: #f1f1f1}
+
+/* Show the dropdown menu (use JS to add this class to the .dropdown-content container when the user clicks on the dropdown button) */
+.show {display:block;}
+</style>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Main</title>
+</head>
+<style>
+*{
+    background:black;
+}
+    div{
+        text-align:center;
+    }
+    input{
+        padding:15px ;
+        margin:10px;
+        width:70%;
+        border-radius:15px;
+        color:white;
+        background:black;
+        border:2px solid white;
+    }
+    button{
+        background:white;
+        margin:20px;
+        padding:10px;
+        cursor:pointer;
+        color:black;
+        border:2px solid white;
+        border-radius:10px;
+    }
+    button:hover{
+        background:black;
+        color:white;
+    }
+    #show{
+    display:block;
+    text-align:center;
+    color :white;
+    margin:auto;
+    margin-bottom:10px;
+    width:40%;
+    border-bottom:2px solid red;}
+    .recommand_response{
+        padding:10px;
+        border-radius:10px;
+    }
+    .recommand_response:hover{
+        color:black;
+        cursor:pointer;
+        background:white;
+    }
+    h1{
+    margin-top:30px;
+    }
+    h1, h3{
+        color:white;
+    }
+</style>
+<body>
+<div>
+    <h1>Movie Suggestion System</h1>
+    <h3>MovieVerse: Discover Your Perfect Films</h3>
+    <datalist id="suggestions">
+        {% for i in movies['title']%}
+            <option value="{{i}}">{{i}}</option>
+        {% endfor %}
+    </datalist>
+    <input id="movie_name" name="movie_name"  placeholder="Select Movie Name You Watched" autoComplete="on" list="suggestions"/>
+    <br>
+    <button onclick="recomandation()">Recomandation</button>
+    <div id="show"></div>
+
+</div>
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+<script>
+
+    function recomandation(){
+
+    var movie_name= document.getElementById('movie_name').value;
+    if (movie_name == ""){
+        alert("Enter Something");
+        return 0}
+    var show= document.getElementById('show');
+    str="";
+ //   alert(movie_name);
+ //   show.innerText = movie_name
+ //   console.log(show);
+
+      const inputFieldValue = movie_name
+      //const inputFieldValue = {'"movie_name"':movie_name}
+       console.log(inputFieldValue)
+    // Send data to Flask using Axios
+    axios.post("/process_data", { data: inputFieldValue })
+      .then(response => {
+        // Handle the response from Flask if needed
+        str +="<ul style='list-style:None;'>";
+        response.data.forEach(e=>{
+            str += '<li class="recommand_response">'+e+'</li>';
+        });
+        str +="</ul>";
+        console.log(response.data);
+        console.log(str);
+        show.innerHTML = str;
+      })
+      .catch(error => {
+        // Handle any errors
+        console.error(error);
+        alert("Select from given list");
+      });
+    }
+</script>
+</body>
+</html>
